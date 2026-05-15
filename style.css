@@ -1,0 +1,287 @@
+/* Global Reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: 'Pixelated MS Sans Serif', Arial; /* Font from 98.css */
+    overflow-x: hidden;
+}
+
+/* Background image handling */
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('assets/bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+
+/* Base styling */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Logo */
+.logo-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.logo {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.5));
+}
+
+/* Main Window */
+.main-window {
+    width: 400px;
+    max-width: 100%;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.7);
+}
+
+.main-window .window-body {
+    padding: 20px;
+}
+
+.main-window p {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+/* Text area styling */
+.dream-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
+    font-family: 'Pixelated MS Sans Serif', Arial;
+    font-size: 14px;
+}
+
+.button-container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.button-container button {
+    padding: 6px 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Loading Simulation */
+.progress-indicator-container {
+    width: 100%;
+    height: 15px;
+    background: silver;
+    box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+    position: relative;
+    padding: 2px;
+    box-sizing: border-box;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: #000080; /* Windows Blue */
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+/* Archive Page */
+.archive-body {
+    overflow: hidden; /* Hide main scrollbar to act like a desktop */
+}
+
+.archive-container {
+    position: relative;
+    width: 100vw;
+    height: calc(100vh - 60px); /* Leave space for taskbar */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.dream-window {
+    position: absolute;
+    width: 300px;
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.6);
+}
+
+.dream-window .window-body {
+    min-height: 80px;
+    word-break: break-word;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #fff;
+    border: inset 2px #dfdfdf;
+    padding: 10px;
+    margin: 0;
+}
+
+.dream-text-content {
+    font-size: 18px;
+    line-height: 1.4;
+    margin: 0;
+    font-family: Arial, sans-serif; /* Make it more legible */
+}
+
+.timestamp {
+    font-size: 10px;
+    color: #666;
+    text-align: right;
+    margin-top: 15px;
+}
+
+/* Desktop Icons */
+.desktop-icons {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.desktop-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+    width: 60px;
+}
+
+.desktop-icon:hover {
+    filter: brightness(1.2);
+}
+
+.desktop-icon::after {
+    content: attr(alt);
+    margin-top: 5px;
+    font-size: 11px;
+    text-align: center;
+    background: #000080;
+    padding: 2px 4px;
+    border: 1px dotted transparent;
+}
+
+.desktop-icon:focus::after {
+    border: 1px dotted #fff;
+}
+
+/* Center Audio Player */
+.center-audio-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.audio-window {
+    width: 450px;
+    max-width: 90vw;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.7);
+}
+
+.audio-screen {
+    background: #000;
+    color: #0f0; /* Retro green or white, depending on preference. Let's use #0f0 */
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    margin-bottom: 15px;
+    border: inset 2px #dfdfdf;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.audio-controls {
+    display: flex;
+    flex-direction: column;
+}
+
+.audio-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.audio-buttons-center {
+    display: flex;
+    gap: 2px;
+}
+
+.retro-btn {
+    min-width: 30px;
+    height: 25px;
+    background: silver;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-right: 1px solid #0a0a0a;
+    border-bottom: 1px solid #0a0a0a;
+    box-shadow: inset 1px 1px #dfdfdf, inset -1px -1px grey;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.retro-btn:active {
+    box-shadow: inset 1px 1px #0a0a0a, inset -1px -1px #fff;
+    border-top: 1px solid grey;
+    border-left: 1px solid grey;
+    border-right: 1px solid #dfdfdf;
+    border-bottom: 1px solid #dfdfdf;
+}
+
+/* Links under player */
+.audio-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.retro-link-btn {
+    padding: 8px 16px;
+    background: silver;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-right: 1px solid #0a0a0a;
+    border-bottom: 1px solid #0a0a0a;
+    box-shadow: inset 1px 1px #dfdfdf, inset -1px -1px grey;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Pixelated MS Sans Serif', Arial;
+}
+
+.retro-link-btn:active {
+    box-shadow: inset 1px 1px #0a0a0a, inset -1px -1px #fff;
+    border-top: 1px solid grey;
+    border-left: 1px solid grey;
+    border-right: 1px solid #dfdfdf;
+    border-bottom: 1px solid #dfdfdf;
+}
