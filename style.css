@@ -26,12 +26,30 @@ body {
     width: 100vw;
     height: 100vh;
 
-    background-image: url('bg2_1@2x.png');
+    background-image: url('bg3@2x.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 
     z-index: -999;
+}
+.bottom-image {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 220px;
+
+    background-image: url('bottom@2x.png');
+
+    background-size: cover;
+    background-position: bottom center;
+    background-repeat: no-repeat;
+
+    z-index: -500;
+
+    pointer-events: none;
 }
 
 /* Base styling */
