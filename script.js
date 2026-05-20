@@ -1,76 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // ---- Index Page Logic ----
+    // ---- Main Page Logic (Index and Archive combined) ----
     const sendBtn = document.getElementById('sendBtn');
     const dreamInput = document.getElementById('dreamInput');
+    const dreamUsername = document.getElementById('dreamUsername');
+    const archiveContainer = document.getElementById('dreamsArchiveContainer');
+    const inputWindow = document.getElementById('inputWindow');
 
-    if (sendBtn && dreamInput) {
-        // Auto focus the input field for the user to type immediately
-        dreamInput.focus();
-
-        sendBtn.addEventListener('click', () => {
-            const text = dreamInput.value.trim();
-            if (text) {
-                // Show loading simulation
-                const loadingContainer = document.getElementById('loadingContainer');
-                const loadingBar = document.getElementById('loadingBar');
-                const sendBtnContainer = document.getElementById('sendBtnContainer');
-                
-                sendBtnContainer.style.display = 'none';
-                loadingContainer.style.display = 'block';
-                
-                // Simulate loading progress
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += Math.random() * 20;
-                    if (progress >= 100) {
-                        progress = 100;
-                        clearInterval(interval);
-                        
-                        // Save to localStorage
-                        const dreams = JSON.parse(localStorage.getItem('laizerDreams') || '[]');
-                        dreams.push({
-                            text: text,
-                            date: new Date().toISOString()
-                        });
-                        localStorage.setItem('laizerDreams', JSON.stringify(dreams));
-                        
-                        // Add delay before redirect to show completed progress bar
-                        setTimeout(() => {
-                            window.location.href = 'archive.html';
-                        }, 500);
-                    }
-                    loadingBar.style.width = `${progress}%`;
-                }, 100);
-
-            } else {
-                alert("Please enter your dream.");
-            }
+    // Load and display all dreams from localStorage
+    function loadAndDisplayDreams() {
+        const dreams = JSON.parse(localStorage.getItem('laizerDreams') || '[]');
+        archiveContainer.innerHTML = '';
+        
+        dreams.forEach((dream, index) => {
+            createDreamWindow(dream, index);
         });
     }
 
-    // ---- Archive Page Logic ----
-    const archiveContainer = document.getElementById('dreamsArchiveContainer');
-    
-    if (archiveContainer) {
-        const dreams = JSON.parse(localStorage.getItem('laizerDreams') || '[]');
-        
-        if (dreams.length === 0) {
-            // Show a default message if empty
-            createDreamWindow({ text: "No dreams recorded yet. Go back and add one!", date: new Date().toISOString() }, 0, true);
-        } else {
-            // Display all dreams randomly
-            dreams.forEach((dream, index) => {
-                createDreamWindow(dream, index);
-            });
-        }
-    }
-
-    function createDreamWindow(dream, index, isCentered = false) {
+    // Create a dream window element
+    function createDreamWindow(dream, index) {
         const dreamEl = document.createElement('div');
         dreamEl.className = 'window dream-window';
         
         // Random positioning
-        // Calculate max bounds to keep windows inside the viewport
         const padding = 20;
         const maxLeft = window.innerWidth - 320; 
         const maxTop = window.innerHeight - 200; 
@@ -78,28 +29,26 @@ document.addEventListener('DOMContentLoaded', () => {
         let randomLeft = padding + Math.random() * (maxLeft > 0 ? maxLeft : 10);
         let randomTop = padding + Math.random() * (maxTop > 0 ? maxTop : 10);
 
-        if (isCentered) {
-            randomLeft = (window.innerWidth / 2) - 150;
-            randomTop = (window.innerHeight / 2) - 75;
-        }
-
         dreamEl.style.left = `${randomLeft}px`;
         dreamEl.style.top = `${randomTop}px`;
-        // Bring newer windows to the front slightly
         dreamEl.style.zIndex = index + 10;
 
         const randomHue = Math.floor(Math.random() * 360);
         const randomColor = `hsl(${randomHue}, 70%, 40%)`;
+        
+        const dreamDate = new Date(dream.date);
+        const formattedDate = dreamDate.toLocaleString();
 
         dreamEl.innerHTML = `
             <div class="title-bar" style="background: ${randomColor};">
-                <div class="title-bar-text">Dream_${index + 1}.txt</div>
+                <div class="title-bar-text">${escapeHTML(dream.username || 'Anonymous')}</div>
                 <div class="title-bar-controls">
                     <button aria-label="Close" class="close-btn"></button>
                 </div>
             </div>
             <div class="window-body">
                 <p class="dream-text-content">${escapeHTML(dream.text)}</p>
+                <div class="timestamp">${formattedDate}</div>
             </div>
         `;
         
@@ -109,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dreamEl.style.display = 'none';
         });
 
-        // Make window draggable (basic implementation)
+        // Make window draggable
         const titleBar = dreamEl.querySelector('.title-bar');
         let isDragging = false;
         let offsetX = 0;
@@ -144,6 +93,97 @@ document.addEventListener('DOMContentLoaded', () => {
         archiveContainer.appendChild(dreamEl);
     }
 
+    // Send button functionality
+    if (sendBtn && dreamInput && dreamUsername) {
+        dreamInput.focus();
+
+        sendBtn.addEventListener('click', () => {
+            const username = dreamUsername.value.trim();
+            const text = dreamInput.value.trim();
+            
+            if (!username || !text) {
+                alert("Please enter your name and your dream.");
+                return;
+            }
+
+            // Show loading simulation
+            const loadingContainer = document.getElementById('loadingContainer');
+            const loadingBar = document.getElementById('loadingBar');
+            const sendBtnContainer = document.getElementById('sendBtnContainer');
+            
+            sendBtnContainer.style.display = 'none';
+            loadingContainer.style.display = 'block';
+            
+            // Simulate loading progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // Save to localStorage
+                    const dreams = JSON.parse(localStorage.getItem('laizerDreams') || '[]');
+                    const newDream = {
+                        username: username,
+                        text: text,
+                        date: new Date().toISOString()
+                    };
+                    dreams.push(newDream);
+                    localStorage.setItem('laizerDreams', JSON.stringify(dreams));
+                    
+                    // Reload dreams display
+                    loadAndDisplayDreams();
+                    
+                    // Reset form
+                    dreamUsername.value = '';
+                    dreamInput.value = '';
+                    dreamInput.focus();
+                    
+                    // Reset button
+                    setTimeout(() => {
+                        loadingContainer.style.display = 'none';
+                        sendBtnContainer.style.display = 'flex';
+                    }, 500);
+                }
+                loadingBar.style.width = `${progress}%`;
+            }, 100);
+        });
+    }
+
+    // Load initial dreams
+    loadAndDisplayDreams();
+
+    // Make Input Window Draggable
+    if (inputWindow) {
+        const inputTitleBar = inputWindow.querySelector('.title-bar');
+        let isDraggingInput = false;
+        let inputOffsetX = 0;
+        let inputOffsetY = 0;
+
+        inputTitleBar.addEventListener('mousedown', (e) => {
+            isDraggingInput = true;
+            const rect = inputWindow.getBoundingClientRect();
+            inputWindow.style.transform = 'none';
+            inputWindow.style.left = `${rect.left}px`;
+            inputWindow.style.top = `${rect.top}px`;
+            
+            inputOffsetX = e.clientX - rect.left;
+            inputOffsetY = e.clientY - rect.top;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDraggingInput) {
+                inputWindow.style.left = `${e.clientX - inputOffsetX}px`;
+                inputWindow.style.top = `${e.clientY - inputOffsetY}px`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDraggingInput = false;
+        });
+    }
+
     // Make Audio Player Draggable
     const audioPlayerContainer = document.getElementById('audioPlayerContainer');
     if (audioPlayerContainer) {
@@ -154,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         audioTitleBar.addEventListener('mousedown', (e) => {
             isDraggingAudio = true;
-            // Since it's fixed with translate(-50%, -50%), we need to reset transform and use normal top/left
             const rect = audioPlayerContainer.getBoundingClientRect();
             audioPlayerContainer.style.transform = 'none';
             audioPlayerContainer.style.left = `${rect.left}px`;
